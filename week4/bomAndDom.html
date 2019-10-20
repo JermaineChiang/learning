@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<head>
+    <script>
+        document.getElementById('getId').textContent += 'GoodBye World';
+        // 在執行時body還沒解析，因此找不到標籤。
+    </script>
+</head>
+
+<body>
+    <h1 class="getClass" id="getId">getName</h1>
+    <h2></h2>
+
+    <div id="dad">dad
+        <div id="old brother">old brother</div>
+        <div id="little brother">little brother</div>
+    </div>
+
+    <div id="jokerPersonality">
+        <li>sarrow</li>
+        <li>happiness</li>
+    </div>
+    <script>
+        // BOM - JavaScript與「瀏覽器」溝通的窗口，不涉及網頁內容。
+        const a = 10;
+        console.log('a: ' + window.a); // 宣告在window下的全域變數
+        window.alert('不免俗要來個Hello World'); // 警告訊息
+        window.confirm('我現在要出征! 我現在要出征!'); // 確認/取消警告訊息
+        window.prompt('試問今年貴庚？'); // 開放式問答
+
+        // window.open('https://www.google.com', '_blank'); // 開啟網頁或檔案
+        // window.location.href = 'https://www.google.com'; // 以location物件更新網址
+        // const lastPage = document.referrer;
+        // window.location.replace = lastPage; // 以referrer物件取得上一頁位址
+
+        const isOnline = window.navigator.onLine; // navigator物件可以取得使用者的瀏覽器資訊
+        // onLine屬性 - 是否連上網路
+        console.log('isOnline: ' + isOnline); // result: true
+
+        const screenH = window.screen.height;
+        const screenW = window.screen.width; // screen物件可取得使用者螢資訊 
+        console.log('screen height: ' + screenH);
+        console.log('screen width: ' + screenW);
+
+        // history - 記錄使用者在目前瀏覽器視窗上顯示過的頁面
+        // window.history.back(); // 回上一頁
+        // window.history.go(); // 下一頁
+        // window.history.forward(); // 下一頁
+        const state = {    // pushState提供開發者將狀態與網址同時存入到history物件
+            pageName: 'myProfile'
+        }
+        // window.history.pushState(state, 'toGoogle', 'https://www.google.com');
+        // 第一個參數為儲存的物件、第二個參數代表新頁面的標題、第三個參數代表新頁面的網址
+
+        // DOM - JavaScript用來控制「網頁」的節點與內容的標準。
+        console.log('getId.textContent: ' + document.getElementById('getId').textContent);  // 藉由id取得DOM名稱 result: getName
+        console.log('getClass.length' + document.getElementsByClassName('getClass').length); // 藉由class名稱取得DOM數量 // result: 1
+        console.log('h1.length' + document.getElementsByTagName('h1').length); // 藉由標籤名稱取得DOM數量 // result: 1
+        document.querySelector('#getId').textContent += ' HelloWorld'; // 藉由選擇器改變html內容，須加上#字號 result: getName HelloWorld
+
+        const parent = document.querySelector('#dad');
+        console.log(parent.firstChild.nextSibling.textContent);
+        // 從#dad標籤取得它的子節點，因為有換行字元，因此第一個是該換行字元，換行字元的下一個才是old brother
+        console.log(parent.lastChild.previousSibling.textContent);
+        // 從#dad標籤取得它的子節點，因為有換行字元，因此最後一個是該換行字元，換行字元的前一個才是little brother
+
+        const divsByTag = document.getElementsByTagName('div'); // getElement方法取得所有div的節點
+        const divsSelector = document.querySelectorAll('div'); // querySelector方法取得所有div的節點
+        divsSelector.forEach(x => {
+            console.log(x.id);
+            // result: dad 
+            //         old brother 
+            //         little brother
+        });
+        parent.innerHTML = ''; // 清空dad下的子節點
+        console.log('divsByTag.length: ' + divsByTag.length); // dad下的子節點皆被清空  result: 3
+        console.log('divsSelector.length: ' + divsSelector.length); // document.querySelector回傳的是靜態的NodeList, 不受dad更新影響 result: 1
+
+        const newH1 = document.createElement('div'); // 新增節點
+        const textNode = document.createTextNode('Welcome to My World');
+        newH1.appendChild(textNode);
+        console.log(newH1); // result: <div>Welcome to My World</div>
+
+        const fragment = document.createDocumentFragment(); // 以虛擬容器操作DOM，因為不是真實的結構，並不會影響目前的網頁文件
+        newH2 = document.createElement('h2');
+        fragment.appendChild(newH2);
+        console.log(fragment); // result: <h2></h2>
+
+        document.write('<h2>Welcome to My World</h2>'); // 直接印在頁面上的方法
+
+        const jokerPersonal = document.getElementById('jokerPersonality');
+        const pushPersonal = document.createElement('li');
+        const personalText = document.createTextNode('pain');
+        pushPersonal.appendChild(personalText);
+        jokerPersonal.appendChild(pushPersonal); // 在陣列後增加節點與內容
+        console.log(jokerPersonal);
+        // result:   <div id="jokerPersonality">
+        //          <li>sarrow</li>
+        //          <li>happiness</li>
+        //           <li>pain</li>
+        //          </div>
+
+        const refNode = document.querySelectorAll('li')[1];
+        const insertPersonal = document.createElement('li');
+        const insertText = document.createTextNode('horrible');
+        insertPersonal.appendChild(insertText);
+        jokerPersonal.insertBefore(insertPersonal, refNode);
+        console.log(jokerPersonal); // 在陣列中插入節點與內容
+        // result:     <div id="jokerPersonality">
+            //          <li>sarrow</li>
+            //          <li>horrible</li>
+            //          <li>happiness</li>
+            //          <li>pain</li>
+            //          </div>
+
+        const refNode2 = document.querySelectorAll('li')[1];
+        const replacePersonal = document.createElement('li');
+        const replaceText = document.createTextNode('terrible');
+        replacePersonal.appendChild(replaceText);
+        jokerPersonal.replaceChild(replacePersonal, refNode2); 
+        console.log(jokerPersonal); // 將舊節點替換成新節點與內容
+        // result:     <div id="jokerPersonality">
+            //          <li>sarrow</li>
+            //          <li>terrible</li>
+            //          <li>happiness</li>
+            //          <li>pain</li>
+            //          </div>
+
+        const refNode3 = document.querySelectorAll('li')[0];
+        jokerPersonal.removeChild(refNode3);
+        console.log(jokerPersonal); // 刪除節點與內容
+        // result:     <div id="jokerPersonality">
+            //          <li>terrible</li>
+            //          <li>happiness</li>
+            //          <li>pain</li>
+            //          </div>
+
+        jokerPersonal.style.fontSize = '20px';
+        jokerPersonal.style.color = 'red'; 
+        jokerPersonal.classList.add('underLine'); // 藉由選擇器控制css和class
+        
+    </script>
+</body>
+<style>
+    .underLine {
+        text-decoration: underline;
+    }
+</style>
+</html>
