@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<body>
+    <div id="outer">
+        <div id="inner">捕獲or冒泡？</div>
+    </div>
+
+    <div id="mouseEvent">快來這裡玩滑鼠!</div>
+    <button id="button" onclick="onClickEvent()">on事件</button>
+    <!-- 事件註冊綁定，以on+事件名屬性來註冊事件，也稱為侵入式JavaScript
+    此方式現已不建議使用 -->
+
+    <div id="btn">BTN</div>
+    <div id="param3">關於第三個參數</div>
+    <div id="custom">自定義事件</div>
+    <div>
+        <a id="link" href="https://www.google.com" (click)="stopHref()">阻擋預設行為</a>
+    </div>
+
+    <!-- <img src="image.jpg" onerror="this.src='default.jpg'"> -->
+    <!--雖然事件的註冊強烈建議使用非侵入式的JavaScript寫法，但error事件則適合以on-event事件來處理
+        當圖檔不存在的時候觸發error事件，替換成指定的預設圖檔-->
+
+    <input id="keyboardEvent" type="text" placeholder="快來這裡玩鍵盤、表單與特殊剪貼簿事件" style="width: 220px">
+
+    <ul id="myList"></ul>
+    <div style="height: 1000px"></div>
+
+    <script>
+        const outer = document.getElementById('outer');
+        const inner = document.getElementById('inner');
+
+        outer.addEventListener('click', function () {
+            console.log('outer事件捕獲');
+        }, true);
+        outer.addEventListener('click', function () {
+            console.log('outer事件冒泡');
+        }, false);
+        inner.addEventListener('click', function () {
+            console.log('inner事件捕獲');
+        }, true);
+        inner.addEventListener('click', function () {
+            console.log('inner事件冒泡');
+        }, false);
+        // 事件分為捕獲 (cpaturing) 與冒泡 (bubbling)兩種
+        // 以addEventListener偵聽事件方法的第三個參數，決定要以哪一種方式觸發事件，若不指定預設為「冒泡」
+        // true -> 事件捕獲  false -> 事件冒泡
+        // result: outer事件捕獲
+        // inner事件捕獲
+        // inner事件冒泡
+        // outer事件冒泡
+
+        window.onload = function () {
+            console.log('onload!!');
+        }
+        // DOM API提供的on-event處理器
+
+        const btnHandler = function () {
+            console.log('btnHandler');
+        }
+        const btnHandler2 = function () {
+            console.log('btnHandler2222');
+        }
+        const btn = document.getElementById('btn');
+        btn.addEventListener('click', btnHandler, false); // 註冊click事件
+        // 事件監聽的三個參數，分別是『事件名稱」、「事件處理器」以及一個決定是否是捕獲或冒泡機制的boolean值
+
+        // btn.removeEventListener('click', btnHandler, false);
+        // 移除click事件，處理器不能為匿名函式
+
+        btn.addEventListener('click', btnHandler2);
+        // 可以重複指定多個事件處理器
+
+        function onClickEvent() {
+            console.log('Enter on-click-event');
+        }
+        // 事件註冊綁定，以on+事件名屬性來註冊事件
+        // 此方式現已不建議使用
+
+        // const button = document.getElementById('button');
+        // button.onclick = null;
+        // 解除指定的on-event
+
+        const forOptions = function () {
+            console.log('第三個參數事件的觸發');
+        }
+        const param3 = document.getElementById('param3');
+        const options = {
+            once: true,     // 代表這個事件只能被觸發一次，觸發第一次後就自動解除事件監聽
+            passive: false, // 若值為true時直接忽略preventDefault()方法
+            capture: true   // 是否為捕獲機制
+        }
+        param3.addEventListener('click', forOptions, options);
+        // 將事件註冊寫在script中，進行行為層分離，為非侵入式JavaScript
+
+
+        //*** 瀏覽器事件
+        window.onunload = function () {
+            console.log('unload!!');
+        }
+        window.onbeforeunload = function () {
+            console.log('beforeunload!!');
+        }
+        // 與load事件相反，此兩種事件會在離開頁面或重新整理時觸發
+
+        window.addEventListener('resize', resizeHandler);
+        window.addEventListener('fullscreenchange', fullscreenchangeHandler);
+        window.addEventListener('scroll', scrollHandler);
+        window.addEventListener('DOMContentLoaded', DOMContentLoadedHandler);
+        // 網頁視窗相關事件，註冊於window上
+        function resizeHandler() {
+            console.log('resize!!'); // 變更瀏覽器尺寸時觸發
+        }
+        function fullscreenchangeHandler() {
+            console.log('full screen changed!!'); // 切換瀏覽器全螢幕功能時觸發
+        }
+        function scrollHandler() {
+            console.log('scrolled!!'); // 視窗捲動時觸發
+        }
+        function DOMContentLoadedHandler() {
+            console.log('DOM好囉!!'); // DOM結構被載好時觸發
+
+        }
+
+        //*** 滑鼠事件
+        const mouseEvent = document.getElementById('mouseEvent');
+        mouseEvent.addEventListener('dblclick', dblclickHandler);
+        mouseEvent.addEventListener('mouseenter', mouseenterHandler);
+        mouseEvent.addEventListener('mousemove', mousemoveHandler);
+        mouseEvent.addEventListener('mouseleave', mouseleaveHandler);
+        mouseEvent.addEventListener('mouseover', mouseoverHandler);
+        mouseEvent.addEventListener('mouseout', mouseoutHandler);
+        // 註冊滑鼠事件
+        function dblclickHandler() {
+            console.log('double click!!'); // 連續點擊兩次
+        }
+        function mouseenterHandler() {
+            console.log('mouse Enter!!'); // 滑鼠進入時
+        }
+        function mousemoveHandler() {
+            console.log('mouse moved!!'); // 滑鼠移動時
+        }
+        function mouseleaveHandler() {
+            console.log('mouse Leave!!'); // 滑鼠移出
+        }
+        function mouseoverHandler() {
+            console.log('mouse over!!'); // 滑鼠移入
+        }
+        // 事件冒泡預設值不同的關係，mouseover要比mouseenter早觸發
+        function mouseoutHandler() {
+            console.log('mouse OUT!!'); // 滑鼠移出
+        }
+        // mouseout要比mouseleave早觸發，事件冒泡預設值不同的關係
+
+        //*** 鍵盤事件
+        const keyboardEvent = document.getElementById('keyboardEvent');
+        keyboardEvent.addEventListener('keydown', keydownHandler);
+        keyboardEvent.addEventListener('keypress', keypressHandler);
+        keyboardEvent.addEventListener('keyup', keyupHandler);
+        // 註冊鍵盤事件
+        function keydownHandler() {
+            console.log('按下鍵盤keydown!!'); // 壓下鍵盤按鍵時觸發
+        }
+        function keypressHandler() {
+            console.log('按下鍵盤keypress!!'); // 除了Shift, Fn, CapsLock三種按鍵外
+            // 按住時會觸發，若按著不放則會連續觸發
+            console.log(event.keyCode); // 透過event.keyCode可以判斷使用者按下的是哪個按鈕代碼
+        }
+        function keyupHandler() {
+            console.log('鍵盤放開!!'); // 滑鼠移動時
+        }
+
+        //*** 表單事件
+        keyboardEvent.addEventListener('select', selectHandler);
+        keyboardEvent.addEventListener('change', changeHandler);
+        keyboardEvent.addEventListener('submmit', submitHandler);
+        keyboardEvent.addEventListener('reset', resetHandler);
+        keyboardEvent.addEventListener('focus', focusHandler);
+        keyboardEvent.addEventListener('blur', blurHandler);
+        // 註冊表單事件
+        function selectHandler(e) {
+            console.log('已選取輸入框文字!!選取的文字為' +
+                e.target.value.substr(e.target.selectionStart, e.target.selectionEnd));
+            // 輸入框選取事件，可由e.target取得選取文字範圍與值
+        }
+        function changeHandler() {
+            console.log('輸入框變動了!!');
+            // change事件，與input事件不同，焦點離開輸入框後才觸發
+        }
+        function submitHandler() {
+            console.log('送出表單!!');
+        }
+        function resetHandler() {
+            console.log('重新reset!!');
+        }
+        function focusHandler() {
+            console.log('聚焦!!');
+        }
+        function blurHandler() {
+            console.log('離開焦點!!');
+        }
+
+        //*** 特殊事件
+        keyboardEvent.addEventListener('compositionstart', compositionstartHandler);
+        keyboardEvent.addEventListener('compositionupdate', compositionupdateHandler);
+        keyboardEvent.addEventListener('compositionend', compositionendHandler);
+        function compositionstartHandler() {
+            console.log('輸入法使用中!!');
+            // 輸入框內開啟輸入法，且正在拼字時觸發
+        }
+        function compositionupdateHandler() {
+            console.log('輸入法選取字!!');
+            // 輸入框內開啟輸入法，且正在拼字或選字時更改了內容時觸發
+        }
+        function compositionendHandler() {
+            console.log('輸入法選完字了!!');
+            // 輸入框內開啟輸入法，拼字或選字完成，正要送出至輸入框時觸發
+        }
+
+        //*** 剪貼簿事件
+        keyboardEvent.addEventListener('cut', cutHandler);
+        keyboardEvent.addEventListener('copy', copyHandler);
+        keyboardEvent.addEventListener('paste', pasteHandler);
+        function cutHandler() {
+            console.log('剪下!!');
+            // 剪下動作時觸發
+        }
+        function copyHandler() {
+            console.log('複製!!');
+            // 複製動作時觸發
+        }
+        function pasteHandler() {
+            console.log('貼上!!');
+            // 貼上時觸發
+        }
+
+        //*** 自定義事件
+        // const event = new Event('goTrip');
+        // const elem = document.getElementById('custom');
+        // elem.addEventListener('goTrip', function (e) {
+        //     console.log('goTrip自定義事件!' + JSON.stringify(e));
+        // event隱藏在Handler內，以參數的形式傳給handler，可用"e"或"event"呼叫
+        // result: goTrip自定義事件!{"isTrusted":false}
+        // });
+        // 監聽事件
+
+        // elem.dispatchEvent(event);
+        // 觸發事件
+
+        const link = document.getElementById('link');
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            // 阻擋預設行為，使a標籤的href失效，但仍會冒泡傳遞事件
+            console.log('連不過去，href已失效！');
+            e.stopPropagation();
+            // 阻擋事件冒泡傳遞
+        });
+
+        //*** Delegation指派
+        const myList = document.getElementById('myList'); // 取得容器
+
+        myList.addEventListener('click', function (e) {  
+            if (e.target.tagName.toLowerCase() === 'li') {
+                console.log(event.currentTarget.textContent);
+                console.log(e.target.textContent);
+                console.log('this: ' + this.textContent);
+                // this代表觸發事件的目標event.currentTarget或e.target
+            }
+        }, false);
+        // 以外層myList來監聽click事件
+
+        let newList = document.createElement('li'); // 建立li元素
+        let textNode = document.createTextNode('Hello World!!'); // 建立textNode文字節點
+        newList.appendChild(textNode); // 透過appendChild將textNode加入至newList
+        myList.appendChild(newList); // 透過appendChild將newList加入至myList
+    </script>
+</body>
+
+</html>
